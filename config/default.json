@@ -1,0 +1,12 @@
+{
+  "listen": {
+    "http": {
+      "port": 8088
+    }
+  },
+  "user": {
+    "data": {
+      "file": "data/users/sample-data.json"
+    }
+  }
+}
