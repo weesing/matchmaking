@@ -6,7 +6,12 @@
   },
   "user": {
     "data": {
-      "file": "data/users/sample-data.json"
+      "file": "users/sample-data.json"
+    }
+  },
+  "matchmaking": {
+    "expansion": {
+      "factor": 5
     }
   }
 }

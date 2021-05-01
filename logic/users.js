@@ -1,40 +1,30 @@
 import _ from 'lodash';
-import config from 'config';
-import path from 'path';
+import { UserState } from './data/user_state';
 
-export default class UsersLogic {
-  async formatUsers(usersList) {
+export class UsersLogic {
+  constructor() {
+    this.userState = UserState.getInstance();
+  }
+
+  formatUsers(usersList) {
     const usersMap = {};
     for (const user of usersList) {
-      usersMap[user.name] = _.pick(user, ['wins', 'losses']);
+      usersMap[user.name] = Object.assign(
+        {},
+        _.pick(user, ['name', 'wins', 'losses'])
+      );
     }
     return usersMap;
   }
 
-  async getUsers() {
-    const dataFile = path.join(__dirname, config.get('user.data.file'));
-    let users = require(dataFile);
-    return users;
+  getUsers() {
+    return this.userState.users;
   }
 
-  async getUsersByWinParams({ winLow, winHigh }) {
-    const results = [];
-    let users = await this.getUsers();
-    users = _.filter(users, (user) => {
-      if (!_.isNil(winLow) && !_.isNil(winHigh)) {
-        if (user.wins >= winLow && user.wins <= winHigh) {
-          results.push(user);
-        }
-      } else if (!_.isNil(winLow)) {
-        if (user.wins >= winLow) {
-          results.push(user);
-        }
-      } else if (!_.isNil(winHigh)) {
-        if (user.wins <= winHigh) {
-          results.push(user);
-        }
-      }
-    });
-    return this.formatUsers(results);
+  async getUsersByNames(names) {
+    const users = await this.getUsers();
+    const usersMap = this.formatUsers(users);
+    const results = _.pick(usersMap, names);
+    return results;
   }
 }

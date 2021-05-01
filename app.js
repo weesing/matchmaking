@@ -4,8 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+import usersRouter from './routes/users';
+import matchMakingRouter from './routes/matchmaking';
 
 var app = express();
 
@@ -31,8 +31,8 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/matchmaking', matchMakingRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -15,7 +15,8 @@
     "jade": "~1.11.0",
     "lodash": "^4.17.21",
     "morgan": "~1.9.1",
-    "parse-request": "^4.0.0"
+    "parse-request": "^4.0.0",
+    "uuid": "^8.3.2"
   },
   "main": "index.js",
   "module": "main.js",
