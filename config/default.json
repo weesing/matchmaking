@@ -11,7 +11,7 @@
   },
   "matchmaking": {
     "expansion": {
-      "factor": 5
+      "agressiveness": 5
     }
   }
 }

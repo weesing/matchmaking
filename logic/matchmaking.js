@@ -8,12 +8,12 @@ export const MATCH_MAKING_3v3 = 6;
 export const MATCH_MAKING_5v5 = 10;
 
 export class MatchMakingLogic {
-  constructor(mode = MATCH_MAKING_3v3) {
-    const matchMakingModes = new Set([MATCH_MAKING_3v3, MATCH_MAKING_5v5]);
+  constructor(mode = MATCH_MAKING_5v5) {
+    const matchMakingModes = new Set([MATCH_MAKING_5v5, MATCH_MAKING_3v3]);
     if (!matchMakingModes.has(mode)) {
       throw new Error(`Unknown mode ${mode}`);
     }
-    this.mode = mode;
+    this.defaultMode = mode;
     this.usersLogic = new UsersLogic();
     this.matchMakingState = MatchMakingState.getInstance();
   }
@@ -28,6 +28,8 @@ export class MatchMakingLogic {
     let nbUsers = await this.findMatch({
       bucketId,
       matchedUsers: [firstUser],
+      mode: this.defaultMode,
+      agressiveness: config.get('matchmaking.expansion.agressiveness'),
     });
 
     if (nbUsers === null) {
@@ -41,8 +43,14 @@ export class MatchMakingLogic {
     return this.matchMakingState.getMatchMakeBucket(bucketId);
   }
 
-  async findMatch({ bucketId, matchScoreAvg = -1, scoreTolerance }) {
-    const nbUsers = this.mode;
+  async findMatch({
+    bucketId,
+    matchScoreAvg = -1,
+    scoreTolerance,
+    mode,
+    agressiveness,
+  }) {
+    const nbUsers = mode;
     const mmBucket = this.matchMakingState.getMatchMakeBucket(bucketId);
     if (mmBucket.users.size >= nbUsers) {
       return mmBucket.users.size;
@@ -58,8 +66,7 @@ export class MatchMakingLogic {
     if (_.isNil(scoreTolerance)) {
       console.table([...mmBucket.users]);
       let firstUserScore = mmBucket.seedUser.score;
-      scoreTolerance =
-        config.get('matchmaking.expansion.factor') / firstUserScore;
+      scoreTolerance = agressiveness / firstUserScore;
       console.info(`Calculated initial tolerance ${scoreTolerance}`);
     }
 
@@ -105,6 +112,12 @@ export class MatchMakingLogic {
       bucketId,
       matchScoreAvg,
       scoreTolerance,
+      mode,
+      agressiveness,
     });
+  }
+
+  async getUserQueue() {
+    return this.matchMakingState.getUserQueue();
   }
 }
