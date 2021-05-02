@@ -35,19 +35,20 @@ export class UserQueue {
   }
 
   enqueue(user, insert = false) {
-    if (!user.score) {
-      this.calculateUserScore(user);
+    const _user = _.cloneDeep(user);
+    if (!_user.score) {
+      this.calculateUserScore(_user);
     }
-    if (!user.queueTime) {
-      user.queueTime = moment().unix();
+    if (!_user.queueTime) {
+      _user.queueTime = moment().unix();
     }
     console.log(
-      `User ${user.name} joined the queue (W:${user.wins}/L:${user.losses}/Score:${user.score}/QueueTime:${user.queueTime})`
+      `User ${_user.name} joined the queue (W:${_user.wins}/L:${_user.losses}/Score:${_user.score}/QueueTime:${_user.queueTime})`
     );
     if (!insert) {
-      this._queue.push(user);
+      this._queue.push(_user);
     } else {
-      this._queue.unshift(user);
+      this._queue.unshift(_user);
     }
   }
 

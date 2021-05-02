@@ -11,12 +11,12 @@
   },
   "matchmaking": {
     "team_build": {
-      "interval_ms": 1000,
+      "interval_ms": 100,
       "expansion": {
         "agressiveness": 5,
         "min_score_tolerance": 100
       },
-      "single_user_team_threshold_secs": 20
+      "single_user_team_threshold_secs": 60
     },
     "match_build": {
       "interval_ms": 1000,

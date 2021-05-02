@@ -162,6 +162,9 @@ export class MatchMakingState {
     const users = [...mmBucket.users];
     // requeue all users
     for (const user of users) {
+      if (user.name === mmBucket.seedUser.name) {
+        continue;
+      }
       this.enqueueUser(user);
     }
     this.removeBucketFromTeamPool(bucketId);
@@ -254,6 +257,7 @@ export class MatchMakingState {
    */
   removeUsersFromQueue(usernames) {
     for (const username of usernames) {
+      console.log(`Removing ${username}`)
       this._usersQueue.removeUser(username);
     }
   }

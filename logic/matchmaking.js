@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import moment from 'moment';
+import moment, { relativeTimeThreshold } from 'moment';
 import config from 'config';
 import { MatchMakingState } from './data/matchmaking_state';
 import { UsersLogic } from './users';
@@ -126,6 +126,7 @@ export class MatchMakingLogic {
     if (!seedUser) {
       return null;
     }
+
     const teamSizeTrySeq = [TEAM_SIZE_5, TEAM_SIZE_3];
     for (const teamSize of teamSizeTrySeq) {
       let bucketId = this.matchMakingState.createTeamBucket(seedUser, teamSize);
@@ -144,7 +145,7 @@ export class MatchMakingLogic {
       if (nbUsers === null) {
         // didn't find a match for the first/seed user.
         console.log(
-          `No team found. Clearing bucket ID ${bucketId} and requeueing users.`
+          `No team found. Clearing bucket ID ${bucketId} and requeueing users other than seed user.`
         );
         this.matchMakingState.clearTeamBucket(bucketId);
       } else {
@@ -173,11 +174,14 @@ export class MatchMakingLogic {
       // Remove user from queue first
       this.matchMakingState.removeUsersFromQueue([seedUser.name]);
       console.log(
-        `******** User ${seedUser.name} can't form a team with others after queueing for ${singleUserTeamThreshold}`
+        `******** User ${seedUser.name} can't form a team with others after queueing for ${singleUserTeamThreshold}s`
       );
       let bucketId = this.matchMakingState.createTeamBucket(seedUser, 1);
       return bucketId;
     }
+
+    console.log(`Exhausted team build, requeueing seed user ${seedUser.name}`)
+    this.matchMakingState.enqueueUser(seedUser);
 
     // Cannot form team
     return null;
@@ -192,7 +196,7 @@ export class MatchMakingLogic {
 
     if (scoreTolerance && scoreTolerance >= teamBucket.scoreToleranceMax) {
       console.warn(
-        `Cannot find anymore matches for these users, tolerance is up to ${scoreTolerance}! Putting them back into the queue.`
+        `Cannot form a team for these users, tolerance is up to ${scoreTolerance}! Putting them back into the queue.`
       );
       formatPrintUsers([...teamBucket.users]);
       return null;
