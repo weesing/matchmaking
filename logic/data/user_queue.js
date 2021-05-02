@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 
 export class UserQueue {
   constructor() {
@@ -10,8 +11,11 @@ export class UserQueue {
   }
 
   calculateUserScore(user) {
-    let wins = _.isNil(user.wins) || user.wins === 0 ? 1 : user.wins;
-    let losses = _.isNil(user.losses) || user.losses === 0 ? 1 : user.losses;
+    let wins = (user.wins =
+      _.isNil(user.wins) || user.wins === 0 ? 1 : user.wins);
+    let losses = (user.losses =
+      _.isNil(user.losses) || user.losses === 0 ? 1 : user.losses);
+
     let score = 0;
     if (wins < 0 || losses < 0) {
       // For corrupted data
@@ -23,18 +27,26 @@ export class UserQueue {
       score = (wins / losses) * 1000;
     }
 
+    score = Math.min(score, Number.MAX_SAFE_INTEGER);
+    user.wins = Math.min(wins, Number.MAX_SAFE_INTEGER);
+    user.losses = Math.min(losses, Number.MAX_SAFE_INTEGER);
+
     user.score = score;
   }
 
   enqueue(user, insert = false) {
-    this.calculateUserScore(user);
+    if (!user.score) {
+      this.calculateUserScore(user);
+    }
+    if (!user.queueTime) {
+      user.queueTime = moment().unix();
+    }
     console.log(
-      `User ${user.name} joined the queue (W:${user.wins}/L:${user.losses}/Score:${user.score})`
+      `User ${user.name} joined the queue (W:${user.wins}/L:${user.losses}/Score:${user.score}/QueueTime:${user.queueTime})`
     );
     if (!insert) {
       this._queue.push(user);
-    }
-    else {
+    } else {
       this._queue.unshift(user);
     }
   }

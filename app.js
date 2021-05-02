@@ -55,4 +55,7 @@ app.use(function (err, req, res, next) {
   }
 });
 
+import { boot } from './boot';
+boot();
+
 module.exports = app;

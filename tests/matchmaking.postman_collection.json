@@ -1,0 +1,158 @@
+{
+	"info": {
+		"_postman_id": "e04db22f-da56-4fa0-85c0-7a79d1df7aa7",
+		"name": "Riot Games Coding Challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "MatchMaking",
+			"item": [
+				{
+					"name": "/matchmaking/matches",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{svcurl}}/matchmaking/matches",
+							"host": [
+								"{{svcurl}}"
+							],
+							"path": [
+								"matchmaking",
+								"matches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/matchmaking/team",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{svcurl}}/matchmaking/team",
+							"host": [
+								"{{svcurl}}"
+							],
+							"path": [
+								"matchmaking",
+								"team"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/matchmaking/team/queue",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{svcurl}}/matchmaking/team/queue",
+							"host": [
+								"{{svcurl}}"
+							],
+							"path": [
+								"matchmaking",
+								"team",
+								"queue"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/matchmaking/users/queue",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{svcurl}}/matchmaking/users/queue",
+							"host": [
+								"{{svcurl}}"
+							],
+							"path": [
+								"matchmaking",
+								"users",
+								"queue"
+							],
+							"query": [
+								{
+									"key": "winLow",
+									"value": "900",
+									"disabled": true
+								},
+								{
+									"key": "winHigh",
+									"value": "950",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/matchmaking/team",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{svcurl}}/matchmaking/team",
+							"host": [
+								"{{svcurl}}"
+							],
+							"path": [
+								"matchmaking",
+								"team"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/matchmaking/matches",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{svcurl}}/matchmaking/matches",
+							"host": [
+								"{{svcurl}}"
+							],
+							"path": [
+								"matchmaking",
+								"matches"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "/users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{svcurl}}/users",
+							"host": [
+								"{{svcurl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

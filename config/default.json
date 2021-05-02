@@ -10,8 +10,20 @@
     }
   },
   "matchmaking": {
-    "expansion": {
-      "agressiveness": 5
+    "team_build": {
+      "interval_ms": 1000,
+      "expansion": {
+        "agressiveness": 5,
+        "min_score_tolerance": 100
+      },
+      "single_user_team_threshold_secs": 20
+    },
+    "match_build": {
+      "interval_ms": 1000,
+      "expansion": {
+        "agressiveness": 5,
+        "min_score_tolerance": 500
+      }
     }
   }
 }
