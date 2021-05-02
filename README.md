@@ -156,4 +156,4 @@ Included in the repository is a Postman package in the file `tests/matchmaking.p
 - Use a central repository (e.g. Redis) for queue/pool storage to support multi-node execution.
 
 # Github
-https://github.com/weesing/riot-coding-challenge/tree/production
+https://github.com/weesing/matchmaking
