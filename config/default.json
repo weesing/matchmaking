@@ -11,7 +11,7 @@
   },
   "matchmaking": {
     "team_build": {
-      "interval_ms": 100,
+      "interval_ms": 1000,
       "expansion": {
         "agressiveness": 5,
         "min_score_tolerance": 100
