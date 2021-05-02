@@ -152,7 +152,9 @@ export class MatchMakingState {
   }
 
   /**
-   * Clear a team bucket off it's users and put team members back into the user queue.
+   * Clear a team bucket off it's users and put team members (except the seed user) 
+   * back into the user queue.
+   * 
    * Will remove and destroy the team bucket from the team bucket pool as well.
    * @param {string} bucketId
    */

@@ -10,7 +10,7 @@ router.post('/matches', async function (req, res, next) {
     res.sendStatus(204);
     return;
   }
-  let match = await matchMakingLogic.getMatch(matchId);
+  let match = await matchMakingLogic.getMatches(matchId);
   console.log(match);
   for (const team of match.teamBuckets) {
     team.users = [...team.users];
