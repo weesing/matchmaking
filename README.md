@@ -127,11 +127,13 @@ Included in the repository is a Postman package in the file `tests/matchmaking.p
 - Team Buckets that were built - `GET <svcurl>/matchmaking/teams`
 - Team Buckets in the queue - `GET <svcurl>/matchmaking/teams/queue`
 - Matches that were built- `GET <svcurl>/matchmaking/matches`
+
 ## Using the Postman package
 - Import the package file into Postman
 - Configure your default environment in Postman to contain
   - `svcurl` - `http://localhost:8088`
-- You can now fire API calls to the service!
+- You can now start firing API calls to the service!
+
 ## Manually trigger Team/Match building
 - Go to `boot.js` in the root of the project.
 - Comment out the following lines to stop the auto-processing of users, teams and matches:
@@ -152,3 +154,6 @@ Included in the repository is a Postman package in the file `tests/matchmaking.p
 - An API for adding users into the user queue.
 - A frontend (server-side web page) to display the teams and matches.
 - Use a central repository (e.g. Redis) for queue/pool storage to support multi-node execution.
+
+# Github
+https://github.com/weesing/riot-coding-challenge/tree/production
