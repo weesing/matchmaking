@@ -41,15 +41,27 @@ export class MatchMakingLogic {
       );
       // Start the recursive call to find matching teams
       let match = await this.tryFindMatch({ matchId });
-      if (_.isNil(match)) {
-        // No matching teams found. Requeue the teams.
-        console.log(`Can't find match. Requeuing teams.`);
-        this.matchMakingState.clearMatch(matchId, true);
-        return null;
+      if (!_.isNil(match)) {
+        return matchId;
       }
-      return matchId;
+      // No matching teams found. Requeue the teams.
+      console.log(`Can't find match. Requeuing teams.`);
+      this.matchMakingState.clearMatch(matchId, true);
     }
     return null;
+  }
+
+  get matchBuildAgressiveness() {
+    return config.get('matchmaking.match_build.expansion.agressiveness');
+  }
+
+  calcMatchBuildInitialTolerance(seedTeam) {
+    if (_.isNil(seedTeam)) {
+      return 0;
+    }
+    const teamAvgScore = seedTeam.avgScore;
+    const agressiveness = this.matchBuildAgressiveness;
+    return agressiveness / teamAvgScore;
   }
 
   /**
@@ -69,16 +81,13 @@ export class MatchMakingLogic {
 
     const homeTeam = match.teamBuckets[0];
     if (homeTeam) {
-      const homeTeamScore = homeTeam.avgScore;
       if (_.isNil(scoreTolerance)) {
-        // No tolerance given. Setup the initial tolerance (agressiveness / home team score)
-        const agressiveness = config.get(
-          'matchmaking.match_build.expansion.agressiveness'
-        );
-        scoreTolerance = agressiveness / homeTeamScore;
+        // No tolerance given. Setup the initial tolerance.
+        scoreTolerance = this.calcMatchBuildInitialTolerance(homeTeam);
       }
 
       // Get all teams from queue
+      const homeTeamScore = homeTeam.avgScore;
       const oppTeamBucketIds = this.matchMakingState.getTeamBucketQueue();
       for (const oppTeamBucketId of oppTeamBucketIds) {
         const oppTeam = this.matchMakingState.getTeamBucket(oppTeamBucketId);
@@ -144,9 +153,6 @@ export class MatchMakingLogic {
       let nbUsers = await this.tryBuildTeam({
         bucketId,
         matchedUsers: [seedUser],
-        agressiveness: config.get(
-          'matchmaking.team_build.expansion.agressiveness'
-        ),
       });
 
       if (nbUsers === null) {
@@ -195,6 +201,19 @@ export class MatchMakingLogic {
     return null;
   }
 
+  get teamBuildAgressiveness() {
+    return config.get('matchmaking.team_build.expansion.agressiveness');
+  }
+
+  calcTeamBuildInitialTolerance(seedUser) {
+    if (_.isNil(seedUser)) {
+      return 0;
+    }
+    const userScore = seedUser.score;
+    const agressiveness = this.teamBuildAgressiveness;
+    return agressiveness / userScore;
+  }
+
   /**
    * Auxiliary recursive method used by buildTeam to build a team. Each recursion increases the scoreTolerance
    * which expands the tolerance level for matching until a team is built OR tolerance have reached maximum cap.
@@ -203,7 +222,7 @@ export class MatchMakingLogic {
    * @param {object} param0
    * @returns {int} Number of users gathered in the team. null if no team is formed.
    */
-  async tryBuildTeam({ bucketId, scoreTolerance, agressiveness }) {
+  async tryBuildTeam({ bucketId, scoreTolerance }) {
     const teamBucket = this.matchMakingState.getTeamBucket(bucketId);
     const teamSize = teamBucket.teamSize;
     if (teamBucket.users.size >= teamSize) {
@@ -218,9 +237,8 @@ export class MatchMakingLogic {
       return null;
     }
     if (_.isNil(scoreTolerance)) {
-      let firstUserScore = teamBucket.seedUser.score;
-      scoreTolerance = agressiveness / firstUserScore;
-      console.info(`Calculated initial tolerance ${scoreTolerance}`);
+      scoreTolerance = this.calcTeamBuildInitialTolerance(teamBucket.seedUser);
+      // console.info(`Calculated initial tolerance ${scoreTolerance}`);
     }
 
     // Get current queue
@@ -255,7 +273,6 @@ export class MatchMakingLogic {
     return this.tryBuildTeam({
       bucketId,
       scoreTolerance,
-      agressiveness,
     });
   }
 
